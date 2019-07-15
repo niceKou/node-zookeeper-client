@@ -13,32 +13,32 @@
  *
  */
 
-var assert            = require('assert');
-var events            = require('events');
-var util              = require('util');
-var net               = require('net');
+var assert = require('assert');
+var events = require('events');
+var util = require('util');
+var net = require('net');
 
-var async             = require('async');
-var u                 = require('underscore');
+var async = require('async');
+var u = require('underscore');
 
-var jute              = require('./lib/jute');
-var ACL               = require('./lib/ACL.js');
-var Id                = require('./lib/Id.js');
-var Path              = require('./lib/Path.js');
-var Event             = require('./lib/Event.js');
-var State             = require('./lib/State.js');
-var Permission        = require('./lib/Permission.js');
-var CreateMode        = require('./lib/CreateMode.js');
-var Exception         = require('./lib/Exception');
-var Transaction       = require('./lib/Transaction.js');
+var jute = require('./lib/jute');
+var ACL = require('./lib/ACL.js');
+var Id = require('./lib/Id.js');
+var Path = require('./lib/Path.js');
+var Event = require('./lib/Event.js');
+var State = require('./lib/State.js');
+var Permission = require('./lib/Permission.js');
+var CreateMode = require('./lib/CreateMode.js');
+var Exception = require('./lib/Exception');
+var Transaction = require('./lib/Transaction.js');
 var ConnectionManager = require('./lib/ConnectionManager.js');
 
 
 // Constants.
 var CLIENT_DEFAULT_OPTIONS = {
-    sessionTimeout : 30000, // Default to 30 seconds.
-    spinDelay : 1000, // Defaults to 1 second.
-    retries : 0 // Defaults to 0, no retry.
+    sessionTimeout: 30000, // Default to 30 seconds.
+    spinDelay: 1000, // Defaults to 1 second.
+    retries: 0 // Defaults to 0, no retry.
 };
 
 var DATA_SIZE_LIMIT = 1048576; // 1 mega bytes.
@@ -48,23 +48,23 @@ var DATA_SIZE_LIMIT = 1048576; // 1 mega bytes.
  */
 function defaultStateListener(state) {
     switch (state) {
-    case State.DISCONNECTED:
-        this.emit('disconnected');
-        break;
-    case State.SYNC_CONNECTED:
-        this.emit('connected');
-        break;
-    case State.CONNECTED_READ_ONLY:
-        this.emit('connectedReadOnly');
-        break;
-    case State.EXPIRED:
-        this.emit('expired');
-        break;
-    case State.AUTH_FAILED:
-        this.emit('authenticationFailed');
-        break;
-    default:
-        return;
+        case State.DISCONNECTED:
+            this.emit('disconnected');
+            break;
+        case State.SYNC_CONNECTED:
+            this.emit('connected');
+            break;
+        case State.CONNECTED_READ_ONLY:
+            this.emit('connectedReadOnly');
+            break;
+        case State.EXPIRED:
+            this.emit('expired');
+            break;
+        case State.AUTH_FAILED:
+            this.emit('authenticationFailed');
+            break;
+        default:
+            return;
     }
 }
 
@@ -238,24 +238,24 @@ Client.prototype.onConnectionManagerState = function (connectionManagerState) {
 
     // Convert connection state to ZooKeeper state.
     switch (connectionManagerState) {
-    case ConnectionManager.STATES.DISCONNECTED:
-        state = State.DISCONNECTED;
-        break;
-    case ConnectionManager.STATES.CONNECTED:
-        state = State.SYNC_CONNECTED;
-        break;
-    case ConnectionManager.STATES.CONNECTED_READ_ONLY:
-        state = State.CONNECTED_READ_ONLY;
-        break;
-    case ConnectionManager.STATES.SESSION_EXPIRED:
-        state = State.EXPIRED;
-        break;
-    case ConnectionManager.STATES.AUTHENTICATION_FAILED:
-        state = State.AUTH_FAILED;
-        break;
-    default:
-        // Not a event in which client is interested, so skip it.
-        return;
+        case ConnectionManager.STATES.DISCONNECTED:
+            state = State.DISCONNECTED;
+            break;
+        case ConnectionManager.STATES.CONNECTED:
+            state = State.SYNC_CONNECTED;
+            break;
+        case ConnectionManager.STATES.CONNECTED_READ_ONLY:
+            state = State.CONNECTED_READ_ONLY;
+            break;
+        case ConnectionManager.STATES.SESSION_EXPIRED:
+            state = State.EXPIRED;
+            break;
+        case ConnectionManager.STATES.AUTHENTICATION_FAILED:
+            state = State.AUTH_FAILED;
+            break;
+        default:
+            // Not a event in which client is interested, so skip it.
+            return;
     }
 
     if (this.state !== state) {
